@@ -1,0 +1,11 @@
+C:\Users\Tyson Shepherd\source\repos\WindowTabs\WindowTabs\bin\Release\WindowTabs.exe.config
+C:\Users\Tyson Shepherd\source\repos\WindowTabs\WindowTabs\bin\Release\WindowTabs.exe
+C:\Users\Tyson Shepherd\source\repos\WindowTabs\WindowTabs\bin\Release\WindowTabs.pdb
+C:\Users\Tyson Shepherd\source\repos\WindowTabs\WindowTabs\bin\Release\Gma.System.MouseKeyHook.dll
+C:\Users\Tyson Shepherd\source\repos\WindowTabs\WindowTabs\obj\Release\WindowTabs.Form1.resources
+C:\Users\Tyson Shepherd\source\repos\WindowTabs\WindowTabs\obj\Release\WindowTabs.Properties.Resources.resources
+C:\Users\Tyson Shepherd\source\repos\WindowTabs\WindowTabs\obj\Release\WindowTabs.csproj.GenerateResource.cache
+C:\Users\Tyson Shepherd\source\repos\WindowTabs\WindowTabs\obj\Release\WindowTabs.csproj.CoreCompileInputs.cache
+C:\Users\Tyson Shepherd\source\repos\WindowTabs\WindowTabs\obj\Release\WindowTabs.csproj.CopyComplete
+C:\Users\Tyson Shepherd\source\repos\WindowTabs\WindowTabs\obj\Release\WindowTabs.exe
+C:\Users\Tyson Shepherd\source\repos\WindowTabs\WindowTabs\obj\Release\WindowTabs.pdb
