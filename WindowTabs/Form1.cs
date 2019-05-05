@@ -55,13 +55,13 @@ namespace WindowTabs
             //MacroExecuter test = new MacroExecuter(testMacro);
             //328834
 
-
-            macroManager.Add(testMacro);
-            macroManager.Add(testMacro);
-            macroManager.Add(testMacro);
-            macroManager.Add(testMacro);
-            macroManager.Add(testMacro);
-            macroManager.Add(testMacro);
+            macroManager.Add(new Macro());
+            //macroManager.Add(testMacro);
+            //macroManager.Add(testMacro);
+            //macroManager.Add(testMacro);
+            //macroManager.Add(testMacro);
+            //macroManager.Add(testMacro);
+            //macroManager.Add(testMacro);
             
             //string jsonParsed = JsonConvert.SerializeObject(testMacro,Formatting.Indented);
             //File.WriteAllText(@"C:\Users\Tyson Shepherd\Desktop\testJSON.txt", jsonParsed);
@@ -86,6 +86,22 @@ namespace WindowTabs
                     break;
                 default:
                     break;
+            }
+            ListView.SelectedIndexCollection indexCollection = listViewWindowTabs.SelectedIndices;
+            List<Macro> applicationMacros;
+            List<Macro> globalMacros;
+            if (indexCollection.Count > 0)
+            {
+                applicationMacros = macroManager.FindByProcessName(windowManager.allWindows[indexCollection[0]].GetProcessName());
+                if (applicationMacros.Count > 0)
+                {
+                    for (int i = 0; i < applicationMacros.Count; i++)
+                    {
+                        if (applicationMacros[i].inputLevel == Macro.InputLevel.global) applicationMacros.RemoveAt(i);
+                    }
+                }
+                globalMacros = macroManager.FindByInputLevel(Macro.InputLevel.global);
+                globalInput.currentMacros = globalMacros.Concat(applicationMacros).ToArray();
             }
         }
 
@@ -199,6 +215,22 @@ namespace WindowTabs
             lblWindowHandle.Text = windowManager.allWindows[e.ItemIndex].GetHWND().ToString();
             lblCurrentProcessID.Text = windowManager.allWindows[e.ItemIndex].GetProcessID().ToString();
             windowManager.MakeWindowFocus(e.ItemIndex);
+            ListView.SelectedIndexCollection indexCollection = listViewWindowTabs.SelectedIndices;
+            List<Macro> applicationMacros;
+            List<Macro> globalMacros;
+            if (indexCollection.Count > 0)
+            {
+                applicationMacros = macroManager.FindByProcessName(windowManager.allWindows[indexCollection[0]].GetProcessName());
+                if (applicationMacros.Count > 0)
+                {
+                    for (int i = 0; i < applicationMacros.Count; i++)
+                    {
+                        if (applicationMacros[i].inputLevel == Macro.InputLevel.global) applicationMacros.RemoveAt(i);
+                    }
+                }
+                globalMacros = macroManager.FindByInputLevel(Macro.InputLevel.global);
+                globalInput.currentMacros = globalMacros.Concat(applicationMacros).ToArray();
+            }
         }
 
         void OnWindowChanged(object sender, EventArgs e)
@@ -224,6 +256,11 @@ namespace WindowTabs
         private void macroListItem_EditButtonClick(object sender, MacroListItem.MacroEditButtonArgs e)
         {
 
+        }
+
+        private void BtnAddMacro_Click(object sender, EventArgs e)
+        {
+            macroManager.Add(new Macro());
         }
 
         /*

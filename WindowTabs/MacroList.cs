@@ -15,7 +15,7 @@ namespace WindowTabs
 
         public event EventHandler<MacroEditArgs> OnMacroEdit;
 
-        List<MacroListItem> macroItems;
+        public List<MacroListItem> macroItems { get; private set;}
         Timer timerScroll;
 
 

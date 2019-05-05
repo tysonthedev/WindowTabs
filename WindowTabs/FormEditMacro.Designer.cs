@@ -765,6 +765,7 @@
             // 
             // PnlTopBar
             // 
+            this.PnlTopBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.PnlTopBar.BackColor = System.Drawing.Color.DimGray;
             this.PnlTopBar.Location = new System.Drawing.Point(0, 0);
             this.PnlTopBar.Name = "PnlTopBar";

@@ -46,6 +46,7 @@
             this.label1a = new System.Windows.Forms.Label();
             this.btnEditMacroa = new System.Windows.Forms.Button();
             this.macroList = new WindowTabs.MacroList();
+            this.btnAddMacro = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProgram)).BeginInit();
             this.pnlTopBar.SuspendLayout();
             this.pnkCurrentMacroList.SuspendLayout();
@@ -121,6 +122,7 @@
             // 
             // pnlTopBar
             // 
+            this.pnlTopBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlTopBar.BackColor = System.Drawing.Color.DimGray;
             this.pnlTopBar.Controls.Add(this.lblCurrentProcessID);
             this.pnlTopBar.Controls.Add(this.lblCurrentWindowName);
@@ -205,8 +207,18 @@
             this.macroList.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.macroList.Location = new System.Drawing.Point(317, 32);
             this.macroList.Name = "macroList";
-            this.macroList.Size = new System.Drawing.Size(200, 590);
+            this.macroList.Size = new System.Drawing.Size(200, 535);
             this.macroList.TabIndex = 8;
+            // 
+            // btnAddMacro
+            // 
+            this.btnAddMacro.Location = new System.Drawing.Point(317, 576);
+            this.btnAddMacro.Name = "btnAddMacro";
+            this.btnAddMacro.Size = new System.Drawing.Size(200, 35);
+            this.btnAddMacro.TabIndex = 9;
+            this.btnAddMacro.Text = "Add Macro";
+            this.btnAddMacro.UseVisualStyleBackColor = true;
+            this.btnAddMacro.Click += new System.EventHandler(this.BtnAddMacro_Click);
             // 
             // Form1
             // 
@@ -214,6 +226,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.ClientSize = new System.Drawing.Size(1198, 620);
+            this.Controls.Add(this.btnAddMacro);
             this.Controls.Add(this.macroList);
             this.Controls.Add(this.pnkCurrentMacroList);
             this.Controls.Add(this.pnlTopBar);
@@ -252,6 +265,7 @@
         private System.Windows.Forms.Button btnEditMacroa;
         private WindowTabs.MacroListItem macroListItem;
         private MacroList macroList;
+        private System.Windows.Forms.Button btnAddMacro;
     }
 }
 

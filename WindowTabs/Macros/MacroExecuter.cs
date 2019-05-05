@@ -10,9 +10,11 @@ using System.Diagnostics;
 
 namespace WindowTabs
 {
+    [Serializable]
     class MacroExecuter
     {
-        System.ComponentModel.BackgroundWorker worker;
+        [NonSerialized]
+        public System.ComponentModel.BackgroundWorker worker;
 
         Macro macro;
         IntPtr targetWindow;
@@ -26,10 +28,13 @@ namespace WindowTabs
 
             IntPtr currentWindow = IntPtr.Zero;
             uint currentProcessID;
-            string[] seperateClassNames = macro.macroClassPath.Split('>');
+            string[] seperateClassNames;
+            if (macro.macroClassPath == null) seperateClassNames = new string[0];
+            else
+            seperateClassNames = macro.macroClassPath.Split('>');
             if (seperateClassNames.Length <= 0)
             {
-                MessageBox.Show("class name invalid when attempting to run Macro(MacroExecuter)");
+                //MessageBox.Show("class name invalid when attempting to run Macro(MacroExecuter)");
                 return;
             }
             else if (seperateClassNames.Length == 1)
@@ -69,16 +74,40 @@ namespace WindowTabs
                 }
                 for (int i = 1; i < seperateClassNames.Length; i++)
                 {
-                    targetWindow = WinApi.FindWindowEx(targetWindow,IntPtr.Zero, seperateClassNames[i], null);
+                    targetWindow = WinApi.FindWindowEx(targetWindow, IntPtr.Zero, seperateClassNames[i], null);
                 }
             }
+        }
 
+        public void Execute()
+        {
             worker.RunWorkerAsync();
+            CurrentlyExecuting(new IsExecutingArgs(true));
+        }
+        public void StopExecution()
+        {
+            worker.CancelAsync();
+            CurrentlyExecuting(new IsExecutingArgs(false));
+        }
 
+        public event EventHandler<IsExecutingArgs> IsCurrentlyExecuting;
+        public virtual void CurrentlyExecuting(IsExecutingArgs e)
+        {
+            EventHandler<IsExecutingArgs> handler = IsCurrentlyExecuting;
+            if (handler != null) handler(this, e);
+        }
+
+        public class IsExecutingArgs
+        {
+            public IsExecutingArgs(bool isMacroExecuting)
+            {
+                isExecuting = isMacroExecuting;
+            }
+            public bool isExecuting;
         }
 
         public event EventHandler<SpecialCommandArgs> PassTheKeys;
-        protected virtual void OnSpecialCommand(SpecialCommandArgs e)
+        public virtual void OnSpecialCommand(SpecialCommandArgs e) 
         {
             EventHandler<SpecialCommandArgs> handler = PassTheKeys;
             if (handler != null) handler(this, e);
@@ -94,10 +123,11 @@ namespace WindowTabs
             }
         }
 
-        private void Worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        public void Worker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
+            CurrentlyExecuting(new IsExecutingArgs(false));
         }
-        private void ExecuteMacro(object sender, System.ComponentModel.DoWorkEventArgs e)
+        public void ExecuteMacro(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             //IntPtr windowToSendInputTo = 
             //if(macro.directInput == true) { WinApi.SetForegroundWindow(macro.macroClassPath)}

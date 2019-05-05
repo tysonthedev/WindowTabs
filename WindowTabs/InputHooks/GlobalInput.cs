@@ -13,38 +13,13 @@ namespace WindowTabs
     class GlobalInput
     {
         KeyboardHook keyboardHook;
+        public Macro[] currentMacros;
         public GlobalInput()
         {
             keyboardHook = new KeyboardHook(KeyboardHook.Parameters.PassAllKeysToNextApp);
             keyboardHook.KeyIntercepted += KeyIntercepted;
-        }
-        
-        bool firstTime = true;
-        IntPtr discordWindow = IntPtr.Zero;
-
-
-
-
-
-
-        Macro rightMacro = new Macro("Click On Next Button", "vivaldi", "Chrome_WidgetWin_1", Macro.InputLevel.application, new List<int>(),
-        //MouseClick,< left(0) - right(1) - middle(2) >,< xpos >,< ypos >,< image path >
-        ////ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(523, 657));
-        //ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(523, 657));
-        //typeOnWindow((IntPtr)(393816), "YEET");
-        new List<MacroAction>()
-        {
-                    //new MacroAction(MacroAction.ActionType.KeyDown, "A"),
-                    //new MacroAction(MacroAction.ActionType.KeyUp, "B"),
-                    //new MacroAction(MacroAction.ActionType.TypeKey,"C"),
-                    //new MacroAction(MacroAction.ActionType.KeyDown,"D"),
-                    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
-                    new MacroAction(MacroAction.ActionType.TypeKey,"Right"),
-                    //new MacroAction(MacroAction.ActionType.MouseDown,"Left,1032,978,"),
-                    //new MacroAction(MacroAction.ActionType.MouseUp,"Left,1032,978,"),
-        //new MacroAction(MacroAction.ActionType.KeyDown,"A")
-    });
-        Macro leftMacro = new Macro("Click On Next Button", "vivaldi", "Chrome_WidgetWin_1", Macro.InputLevel.application, new List<int>(),
+            currentMacros = new Macro[]{
+            new Macro("Click On Next Button", "vivaldi", "Chrome_WidgetWin_1", Macro.InputLevel.global, new List<int>(){102},
 //MouseClick,< left(0) - right(1) - middle(2) >,< xpos >,< ypos >,< image path >
 ////ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(523, 657));
 //ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(523, 657));
@@ -56,18 +31,82 @@ new List<MacroAction>()
                     //new MacroAction(MacroAction.ActionType.TypeKey,"C"),
                     //new MacroAction(MacroAction.ActionType.KeyDown,"D"),
                     //new MacroAction(MacroAction.ActionType.KeyDown,"A")
-                    new MacroAction(MacroAction.ActionType.TypeKey,"Left"),
-                    //new MacroAction(MacroAction.ActionType.MouseDown,"Left,897,978,"),
-                    //new MacroAction(MacroAction.ActionType.MouseUp,"Left,897,978,"),
+                    //new MacroAction(MacroAction.ActionType.TypeKey,"Right"),
+                    new MacroAction(MacroAction.ActionType.MouseDown,"Left,1032,978,"),
+                    new MacroAction(MacroAction.ActionType.MouseUp,"Left,1032,978,"),
     //new MacroAction(MacroAction.ActionType.KeyDown,"A")
-});
+}),
+            new Macro("Click On Next Button", "vivaldi", "Chrome_WidgetWin_1", Macro.InputLevel.global, new List<int>(){100},
+//MouseClick,< left(0) - right(1) - middle(2) >,< xpos >,< ypos >,< image path >
+////ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(523, 657));
+//ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(523, 657));
+//typeOnWindow((IntPtr)(393816), "YEET");
+new List<MacroAction>()
+{
+                    //new MacroAction(MacroAction.ActionType.KeyDown, "A"),
+                    //new MacroAction(MacroAction.ActionType.KeyUp, "B"),
+                    //new MacroAction(MacroAction.ActionType.TypeKey,"C"),
+                    //new MacroAction(MacroAction.ActionType.KeyDown,"D"),
+                    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
+                    //new MacroAction(MacroAction.ActionType.TypeKey,"Left"),
+                    new MacroAction(MacroAction.ActionType.MouseDown,"Left,897,978,"),
+                    new MacroAction(MacroAction.ActionType.MouseUp,"Left,897,978,"),
+    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
+})
+        };
+        }
 
 
 
+        bool firstTime = true;
+        IntPtr discordWindow = IntPtr.Zero;
 
         List<Keys> currentlyPressedOrder = new List<Keys>();
         private void KeyIntercepted(KeyboardHook.KeyboardHookEventArgs e)
         {
+
+
+
+            /*
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * currently keys aren't being detected correctly macros execute perfectly fine
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             * 
+             */
+
+
+
+
+
+
+
+
+
             //use Enum.TryParse to get the key combo from a string
             //KeyboardKeyInfo.GetKeyState(Keys.NumPad4).IsPressed
             //use the above line to test if that key is down
@@ -80,33 +119,37 @@ new List<MacroAction>()
             {
                 for (int i = 0; i < currentlyPressedOrder.Count; i++)
                 {
-                    if (!KeyboardKeyInfo.GetKeyState(currentlyPressedOrder[i]).IsPressed) currentlyPressedOrder.RemoveAt(i);
+                    if (!KeyboardKeyInfo.GetKeyState(currentlyPressedOrder[i]).IsPressed)
+                    {
+                        currentlyPressedOrder.RemoveAt(i);
+                        if (currentMacros == null) return;
+                        else if (currentMacros.Length <= 0) return;
+                        for (int a = 0; a < currentMacros.Length; a++)
+                        {
+                            if (areKeyArraysTheSame(currentMacros[i].hotkeyAsKeys(), currentlyPressedOrder.ToArray()))
+                            {
+                                if (!currentMacros[a].currentlyExecuting) currentMacros[a].macroExecuter.Execute();
+                                else currentMacros[a].macroExecuter.StopExecution();
+                            }
+                        }
+                    }
                 }
             }
             if (!currentlyPressedOrder.Contains(currentKey))
             {
                 currentlyPressedOrder.Add(currentKey);
-                if (currentlyPressedOrder.Contains(Keys.NumPad4))
+                if (currentMacros == null) return;
+                else if (currentMacros.Length <= 0) return;
+                for (int i = 0; i < currentMacros.Length; i++)
                 {
-                    MacroExecuter yeet = new MacroExecuter(leftMacro);
+                    if (areKeyArraysTheSame(currentMacros[i].hotkeyAsKeys(),currentlyPressedOrder.ToArray()))
+                    {
+                        if (!currentMacros[i].currentlyExecuting) currentMacros[i].macroExecuter.Execute();
+                        else currentMacros[i].macroExecuter.StopExecution();
+                    }
                 }
-                /*
-                if (KeyboardKeyInfo.GetKeyState(Keys.NumPad4).IsPressed)
-                {
-                    MacroExecuter yeet = new MacroExecuter(leftMacro);
-                }
-                */
-                if (currentlyPressedOrder.Contains(Keys.NumPad6))
-                {
-                    MacroExecuter yeet = new MacroExecuter(rightMacro);
-                }
-                /*
-                if (KeyboardKeyInfo.GetKeyState(Keys.NumPad6).IsPressed)
-                {
-                    MacroExecuter yeet = new MacroExecuter(rightMacro);
-                }
-                */
             }
+
             //KeyboardKeyInfo.GetKeyState(currentKey).IsPressed;
 
             //KeyboardKeyInfo.GetKeyState(Keys.NumPad4).IsPressed
@@ -146,6 +189,16 @@ new List<MacroAction>()
             //TypeOnWindow(discordWindow, e.KeyCode);
         }
 
+        bool areKeyArraysTheSame(Keys[] first, Keys[] second)
+        {
+            if(first.Length != second.Length) return false;
+            for (int i = 0; i < first.Length; i++)
+            {
+                if (first[i] != second[i]) return false;
+            }
+            return true;
+        }
+
         void TypeOnWindow(IntPtr hwnd, int keycode)
         {
                 Keys whichKey = (Keys)Enum.Parse(typeof(Keys), keycode.ToString());
@@ -174,3 +227,40 @@ new List<MacroAction>()
 
     
 }
+
+/*
+Macro rightMacro = new Macro("Click On Next Button", "vivaldi", "Chrome_WidgetWin_1", Macro.InputLevel.application, new List<int>(),
+//MouseClick,< left(0) - right(1) - middle(2) >,< xpos >,< ypos >,< image path >
+////ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(523, 657));
+//ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(523, 657));
+//typeOnWindow((IntPtr)(393816), "YEET");
+new List<MacroAction>()
+{
+                    //new MacroAction(MacroAction.ActionType.KeyDown, "A"),
+                    //new MacroAction(MacroAction.ActionType.KeyUp, "B"),
+                    //new MacroAction(MacroAction.ActionType.TypeKey,"C"),
+                    //new MacroAction(MacroAction.ActionType.KeyDown,"D"),
+                    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
+                    //new MacroAction(MacroAction.ActionType.TypeKey,"Right"),
+                    new MacroAction(MacroAction.ActionType.MouseDown,"Left,1032,978,"),
+                    new MacroAction(MacroAction.ActionType.MouseUp,"Left,1032,978,"),
+    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
+});
+Macro leftMacro = new Macro("Click On Next Button", "vivaldi", "Chrome_WidgetWin_1", Macro.InputLevel.application, new List<int>(),
+//MouseClick,< left(0) - right(1) - middle(2) >,< xpos >,< ypos >,< image path >
+////ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(523, 657));
+//ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(523, 657));
+//typeOnWindow((IntPtr)(393816), "YEET");
+new List<MacroAction>()
+{
+                    //new MacroAction(MacroAction.ActionType.KeyDown, "A"),
+                    //new MacroAction(MacroAction.ActionType.KeyUp, "B"),
+                    //new MacroAction(MacroAction.ActionType.TypeKey,"C"),
+                    //new MacroAction(MacroAction.ActionType.KeyDown,"D"),
+                    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
+                    //new MacroAction(MacroAction.ActionType.TypeKey,"Left"),
+                    new MacroAction(MacroAction.ActionType.MouseDown,"Left,897,978,"),
+                    new MacroAction(MacroAction.ActionType.MouseUp,"Left,897,978,"),
+    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
+});
+*/

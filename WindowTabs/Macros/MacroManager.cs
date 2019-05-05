@@ -8,7 +8,7 @@ namespace WindowTabs
 {
     class MacroManager
     {
-        List<Macro> allMacros;
+        public List<Macro> allMacros { get; private set; }
 
         public event EventHandler<MacroListChangeArgs> MacroManagerListChange;
 

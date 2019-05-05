@@ -18,8 +18,10 @@ namespace WindowTabs
         public string macroClassPath;
         public List<int> hotkey;
         public bool directInput;
+        public bool currentlyExecuting { get; private set; } = false;
         public InputLevel inputLevel;
         public List<MacroAction> macroActions;
+        public MacroExecuter macroExecuter;
 
         //macro name will be the txt file name
         //example of macroProcessName:notepad.exe
@@ -29,6 +31,10 @@ namespace WindowTabs
         {
             hotkey = new List<int>();
             macroActions = new List<MacroAction>();
+            macroName = "New Macro";
+            hotkey = new List<int>(){ 84, 69, 83, 84 };
+            macroExecuter = new MacroExecuter(this);
+            macroExecuter.IsCurrentlyExecuting += OnExecutionChange;
         }
         public static Macro DeepCopy(Macro macro)
         {
@@ -37,8 +43,15 @@ namespace WindowTabs
             formatter.Serialize(stream, macro);
             stream.Seek(0, SeekOrigin.Begin);
             Macro result = (Macro)formatter.Deserialize(stream);
+            result.macroExecuter.worker = new System.ComponentModel.BackgroundWorker();
+            result.macroExecuter.worker.DoWork += result.macroExecuter.ExecuteMacro;
+            result.macroExecuter.worker.RunWorkerCompleted += result.macroExecuter.Worker_RunWorkerCompleted;
             stream.Close();
             return result;
+        }
+        private void OnExecutionChange(object sender, MacroExecuter.IsExecutingArgs e)
+        {
+            currentlyExecuting = e.isExecuting;
         }
         public override bool Equals(object whichMacro)
         {
@@ -79,6 +92,20 @@ namespace WindowTabs
             windowTabs,
             application
         }
+        public Keys[] hotkeyAsKeys()
+        {
+            int[] hotkeysInt = hotkey.ToArray();
+            if (hotkeysInt == null) return null;
+            else if (hotkeysInt.Length <= 0) return null;
+
+            Keys[] keys = new Keys[hotkeysInt.Length];
+
+            for (int i = 0; i < hotkeysInt.Length; i++)
+            {
+                keys[i] = (Keys)(hotkeysInt[i]);
+            }
+            return keys;
+        }
         public Macro(string name, string processName, string classPath, InputLevel _inputLevel, List<int> _hotkey, List<MacroAction> actions)
         {
             macroName = name;
@@ -87,6 +114,8 @@ namespace WindowTabs
             macroActions = actions;
             hotkey = _hotkey;
             inputLevel = _inputLevel;
+            macroExecuter = new MacroExecuter(this);
+            macroExecuter.IsCurrentlyExecuting += OnExecutionChange;
         }
     }
 }
