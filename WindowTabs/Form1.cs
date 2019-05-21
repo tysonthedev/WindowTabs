@@ -32,37 +32,43 @@ namespace WindowTabs
             globalInput = new GlobalInput();
             macroManager = new MacroManager();
             //this.TopMost = true;
+            if (Directory.Exists(@Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\WindowTabs\"))
+            {
+                if (File.Exists(@Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\WindowTabs\macros.txt"))
+                {
+                    macroManager = JsonConvert.DeserializeObject<MacroManager>(File.ReadAllText(@Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\WindowTabs\macros.txt"));
+                    if (macroManager == null)
+                    {
+                        MessageBox.Show("couldn't load config file will make a new macros save file \n (a copy of the old macros save file will be left at "
+                                        + @Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"WindowTabs\broken.txt" + "\n" + " a new macros save file will be saved when the program is closed");
+                        macroManager = new MacroManager();
+                    }
+                }
+                else macroManager = new MacroManager();
+            }
+            else
+            {
+                Directory.CreateDirectory(@Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\WindowTabs\");
+                macroManager = new MacroManager();
+            }
             windowManager = new WindowManager(this.Handle);
             windowManager.WindowChanged += OnWindowChanged;
             macroList.OnMacroEdit += OnMacroEdit;
             macroManager.MacroManagerListChange += OnMacroManagerListChange;
-            Macro testMacro = new Macro("Click On Next Button", "vivaldi", "Chrome_WidgetWin_1", Macro.InputLevel.application, new List<int>(),
-                //MouseClick,< left(0) - right(1) - middle(2) >,< xpos >,< ypos >,< image path >
-                ////ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(523, 657));
-                //ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(523, 657));
-                //typeOnWindow((IntPtr)(393816), "YEET");
-                new List<MacroAction>()
-                {
-                    //new MacroAction(MacroAction.ActionType.KeyDown, "A"),
-                    //new MacroAction(MacroAction.ActionType.KeyUp, "B"),
-                    //new MacroAction(MacroAction.ActionType.TypeKey,"C"),
-                    //new MacroAction(MacroAction.ActionType.KeyDown,"D"),
-                    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
-                    new MacroAction(MacroAction.ActionType.MouseDown,"Left,1025,978,"),
-                    new MacroAction(MacroAction.ActionType.MouseUp,"Left,1025,978,"),
-                    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
-                });
-            //MacroExecuter test = new MacroExecuter(testMacro);
-            //328834
+            List<Macro> globalMacros = macroManager.FindByInputLevel(Macro.InputLevel.global);
+            globalInput.currentMacros = globalMacros.ToArray();
+            foreach (Macro macro in globalMacros)
+            {
+                macroList.Add(macro.macroName, macro.HotkeyString());
+            }
+            //macroManager.Add(new Macro());
+            //macroManager.Add(testMacro);
+            //macroManager.Add(testMacro);
+            //macroManager.Add(testMacro);
+            //macroManager.Add(testMacro);
+            //macroManager.Add(testMacro);
+            //macroManager.Add(testMacro);
 
-            macroManager.Add(new Macro());
-            //macroManager.Add(testMacro);
-            //macroManager.Add(testMacro);
-            //macroManager.Add(testMacro);
-            //macroManager.Add(testMacro);
-            //macroManager.Add(testMacro);
-            //macroManager.Add(testMacro);
-            
             //string jsonParsed = JsonConvert.SerializeObject(testMacro,Formatting.Indented);
             //File.WriteAllText(@"C:\Users\Tyson Shepherd\Desktop\testJSON.txt", jsonParsed);
             //Macro testMacro = new Macro();
@@ -103,6 +109,11 @@ namespace WindowTabs
                 globalMacros = macroManager.FindByInputLevel(Macro.InputLevel.global);
                 globalInput.currentMacros = globalMacros.Concat(applicationMacros).ToArray();
             }
+            else
+            {
+                globalMacros = macroManager.FindByInputLevel(Macro.InputLevel.global);
+                globalInput.currentMacros = macroManager.FindByInputLevel(Macro.InputLevel.global).ToArray();
+            }
         }
 
         private void OnMacroEdit(object sender, MacroList.MacroEditArgs e)
@@ -124,47 +135,6 @@ namespace WindowTabs
         {
             if (backgroundWorkerAddWindow.IsBusy == false)
                 backgroundWorkerAddWindow.RunWorkerAsync(this.Handle);
-            //windowManager.AddNewWindow(this.Handle);
-
-            //vivaldi next song
-            //1048,984
-            //ClickOnWindow((IntPtr)(591176), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(1048, 984));
-            //ClickOnWindow((IntPtr)(591176), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(1048, 984));
-            //typeOnWindow((IntPtr)(3867712), "TEST");
-            //notepad++ (not working)
-            //ClickOnWindow((IntPtr)(30081600), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(400, 300));
-            //ClickOnWindow((IntPtr)(30081600), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(400, 300));
-            //typeOnWindow((IntPtr)(30081600), "TEST");
-            //slack
-            //ClickOnWindow((IntPtr)(2558992), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(460, 656));
-            //ClickOnWindow((IntPtr)(2558992), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(460, 656));
-            //typeOnWindow((IntPtr)(2558992), "TEST");
-            //discord
-            //ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(523, 657));
-            //ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(523, 657));
-            //typeOnWindow((IntPtr)(393816), "YEET");
-            //Keys a = (Keys)Enum.Parse(typeof(Keys), "A");
-            //WinApi.SendMessage(notepad.hwnd, 0x000c, IntPtr.Zero, new StringBuilder("yeetasdf"));
-            //WinApi.PostMessage(notepad.hwnd, 0x000c, a, IntPtr.Zero);
-            //steam
-            //IntPtr steamWindow = WinApi.FindWindow("SDL_app", null);
-            //steamWindow = WinApi.FindWindowEx(steamWindow, IntPtr.Zero, "CefBrowserWindow", null);
-            //IntPtr correctWindow = WinApi.FindWindowEx(steamWindow, IntPtr.Zero, "Chrome_WidgetWin_0", null);
-            //MessageBox.Show(correctWindow.ToString());
-            //ClickOnWindow(correctWindow, (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(150, 613));
-            //ClickOnWindow(correctWindow, (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(150, 613));
-            //typeOnWindow(correctWindow, "TEST");
-            //ClickOnWindow((IntPtr)(132848), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(150, 613));
-            //    ClickOnWindow((IntPtr)(132848), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(150, 613));
-            //    typeOnWindow((IntPtr)(132848), "TEST");
-            /*
-            List<IntPtr> allWindows = WinApi.GetAllChildHandles((IntPtr)(393816));
-            foreach (IntPtr handle in allWindows)
-            {
-                Console.WriteLine(handle.ToString());
-                
-            }
-            */
         }
 
         bool mouseDown = false;
@@ -221,15 +191,28 @@ namespace WindowTabs
             if (indexCollection.Count > 0)
             {
                 applicationMacros = macroManager.FindByProcessName(windowManager.allWindows[indexCollection[0]].GetProcessName());
-                if (applicationMacros.Count > 0)
+                if (applicationMacros != null)
                 {
-                    for (int i = 0; i < applicationMacros.Count; i++)
+                    if (applicationMacros.Count > 0)
                     {
-                        if (applicationMacros[i].inputLevel == Macro.InputLevel.global) applicationMacros.RemoveAt(i);
+                        for (int i = 0; i < applicationMacros.Count; i++)
+                        {
+                            if (applicationMacros[i].inputLevel == Macro.InputLevel.global)
+                            {
+                                applicationMacros.RemoveAt(i);
+                                i--;
+                            } 
+                        }
                     }
                 }
                 globalMacros = macroManager.FindByInputLevel(Macro.InputLevel.global);
-                globalInput.currentMacros = globalMacros.Concat(applicationMacros).ToArray();
+                if (globalMacros == null && applicationMacros == null) globalInput.currentMacros = new Macro[0];
+                else if (globalMacros == null && applicationMacros != null) globalInput.currentMacros = applicationMacros.ToArray();
+                else if (globalMacros != null && applicationMacros == null) globalInput.currentMacros = globalMacros.ToArray();
+                else globalInput.currentMacros = globalMacros.Concat(applicationMacros).ToArray();
+                if (globalInput.currentMacros == null) macroList.Clear();
+                else if (globalInput.currentMacros.Count() == 0) macroList.Clear();
+
             }
         }
 
@@ -261,6 +244,11 @@ namespace WindowTabs
         private void BtnAddMacro_Click(object sender, EventArgs e)
         {
             macroManager.Add(new Macro());
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            File.WriteAllText(@Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\WindowTabs\macros.txt", JsonConvert.SerializeObject(macroManager, Formatting.Indented));
         }
 
         /*

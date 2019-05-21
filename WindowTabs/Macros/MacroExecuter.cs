@@ -21,17 +21,19 @@ namespace WindowTabs
         public MacroExecuter(Macro macroToExecute)
         {
             macro = macroToExecute;
+        }
+
+        public void Execute()
+        {
             targetWindow = IntPtr.Zero;
-            worker = new System.ComponentModel.BackgroundWorker();
-            worker.DoWork += ExecuteMacro;
-            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+
 
             IntPtr currentWindow = IntPtr.Zero;
             uint currentProcessID;
             string[] seperateClassNames;
             if (macro.macroClassPath == null) seperateClassNames = new string[0];
             else
-            seperateClassNames = macro.macroClassPath.Split('>');
+                seperateClassNames = macro.macroClassPath.Split('>');
             if (seperateClassNames.Length <= 0)
             {
                 //MessageBox.Show("class name invalid when attempting to run Macro(MacroExecuter)");
@@ -77,15 +79,17 @@ namespace WindowTabs
                     targetWindow = WinApi.FindWindowEx(targetWindow, IntPtr.Zero, seperateClassNames[i], null);
                 }
             }
-        }
-
-        public void Execute()
-        {
+            worker = new System.ComponentModel.BackgroundWorker();
+            worker.DoWork += ExecuteMacro;
+            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
             worker.RunWorkerAsync();
             CurrentlyExecuting(new IsExecutingArgs(true));
         }
         public void StopExecution()
         {
+            //worker = new System.ComponentModel.BackgroundWorker();
+            //worker.DoWork += ExecuteMacro;
+            //worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
             worker.CancelAsync();
             CurrentlyExecuting(new IsExecutingArgs(false));
         }
@@ -96,7 +100,6 @@ namespace WindowTabs
             EventHandler<IsExecutingArgs> handler = IsCurrentlyExecuting;
             if (handler != null) handler(this, e);
         }
-
         public class IsExecutingArgs
         {
             public IsExecutingArgs(bool isMacroExecuting)

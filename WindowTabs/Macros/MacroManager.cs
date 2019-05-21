@@ -110,7 +110,7 @@ namespace WindowTabs
                     thisList.Add(macro);
                 }
             }
-            //if it gets to this point then there is no macro with that name
+            //if it gets to this point then there is no macro with that hotkey
             return thisList;
         }
 

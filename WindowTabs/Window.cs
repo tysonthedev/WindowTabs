@@ -35,7 +35,7 @@ namespace WindowTabs
             WinApi.GetClassName(hwnd, className, 256);
             return className.ToString();
         }
-        public string GetProcessName() { return process.ProcessName; }
+        public string GetProcessName() { return process.ProcessName.Split('.')[0]; }
         public IntPtr GetHWND() { return hwnd; }
         public uint GetProcessID() { return processID; }
         public Bitmap GetIcon() { return icon; }

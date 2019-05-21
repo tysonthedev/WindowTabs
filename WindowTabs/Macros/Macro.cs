@@ -29,10 +29,10 @@ namespace WindowTabs
 
         public Macro()
         {
+            //hotkey = new List<int>() { 84, 69, 83, 84 };
             hotkey = new List<int>();
             macroActions = new List<MacroAction>();
             macroName = "New Macro";
-            hotkey = new List<int>(){ 84, 69, 83, 84 };
             macroExecuter = new MacroExecuter(this);
             macroExecuter.IsCurrentlyExecuting += OnExecutionChange;
         }

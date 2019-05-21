@@ -189,9 +189,9 @@ namespace WindowTabs
                 int newItemIndex = listBoxMacroActions.IndexFromPoint(listBoxMacroActions.PointToClient(new Point(e.X, e.Y)));
                 if (newItemIndex != -1)
                 {
-                    MacroAction oldItem = editedMacro.macroActions[oldItemIndex];
-                    editedMacro.macroActions[oldItemIndex] = editedMacro.macroActions[newItemIndex];
-                    editedMacro.macroActions[newItemIndex] = oldItem;
+                    //MacroAction oldItem = editedMacro.macroActions[oldItemIndex];
+                    //editedMacro.macroActions[oldItemIndex] = editedMacro.macroActions[newItemIndex];
+                    //editedMacro.macroActions[newItemIndex] = oldItem;
                     object obj = listBoxMacroActions.Items[oldItemIndex];
                     listBoxMacroActions.Items.Remove(obj);
                     listBoxMacroActions.Items.Insert(newItemIndex, obj);

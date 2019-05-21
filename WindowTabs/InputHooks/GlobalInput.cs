@@ -18,42 +18,6 @@ namespace WindowTabs
         {
             keyboardHook = new KeyboardHook(KeyboardHook.Parameters.PassAllKeysToNextApp);
             keyboardHook.KeyIntercepted += KeyIntercepted;
-            currentMacros = new Macro[]{
-            new Macro("Click On Next Button", "vivaldi", "Chrome_WidgetWin_1", Macro.InputLevel.global, new List<int>(){102},
-//MouseClick,< left(0) - right(1) - middle(2) >,< xpos >,< ypos >,< image path >
-////ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(523, 657));
-//ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(523, 657));
-//typeOnWindow((IntPtr)(393816), "YEET");
-new List<MacroAction>()
-{
-                    //new MacroAction(MacroAction.ActionType.KeyDown, "A"),
-                    //new MacroAction(MacroAction.ActionType.KeyUp, "B"),
-                    //new MacroAction(MacroAction.ActionType.TypeKey,"C"),
-                    //new MacroAction(MacroAction.ActionType.KeyDown,"D"),
-                    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
-                    //new MacroAction(MacroAction.ActionType.TypeKey,"Right"),
-                    new MacroAction(MacroAction.ActionType.MouseDown,"Left,1032,978,"),
-                    new MacroAction(MacroAction.ActionType.MouseUp,"Left,1032,978,"),
-    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
-}),
-            new Macro("Click On Next Button", "vivaldi", "Chrome_WidgetWin_1", Macro.InputLevel.global, new List<int>(){100},
-//MouseClick,< left(0) - right(1) - middle(2) >,< xpos >,< ypos >,< image path >
-////ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONDOWN, new Point(523, 657));
-//ClickOnWindow((IntPtr)(393816), (uint)WinApi.WParamMouse.WM_LBUTTONUP, new Point(523, 657));
-//typeOnWindow((IntPtr)(393816), "YEET");
-new List<MacroAction>()
-{
-                    //new MacroAction(MacroAction.ActionType.KeyDown, "A"),
-                    //new MacroAction(MacroAction.ActionType.KeyUp, "B"),
-                    //new MacroAction(MacroAction.ActionType.TypeKey,"C"),
-                    //new MacroAction(MacroAction.ActionType.KeyDown,"D"),
-                    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
-                    //new MacroAction(MacroAction.ActionType.TypeKey,"Left"),
-                    new MacroAction(MacroAction.ActionType.MouseDown,"Left,897,978,"),
-                    new MacroAction(MacroAction.ActionType.MouseUp,"Left,897,978,"),
-    //new MacroAction(MacroAction.ActionType.KeyDown,"A")
-})
-        };
         }
 
 
@@ -64,49 +28,6 @@ new List<MacroAction>()
         List<Keys> currentlyPressedOrder = new List<Keys>();
         private void KeyIntercepted(KeyboardHook.KeyboardHookEventArgs e)
         {
-
-
-
-            /*
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * currently keys aren't being detected correctly macros execute perfectly fine
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             * 
-             */
-
-
-
-
-
-
-
-
-
             //use Enum.TryParse to get the key combo from a string
             //KeyboardKeyInfo.GetKeyState(Keys.NumPad4).IsPressed
             //use the above line to test if that key is down
@@ -115,6 +36,22 @@ new List<MacroAction>()
             //if there is one then execute that macro
             Keys currentKey;
             Enum.TryParse<Keys>(e.KeyName, out currentKey);
+
+            if (!currentlyPressedOrder.Contains(currentKey))
+            {
+                currentlyPressedOrder.Add(currentKey);
+                if (currentMacros == null) return;
+                else if (currentMacros.Length <= 0) return;
+                for (int i = 0; i < currentMacros.Length; i++)
+                {
+                    if (areKeyArraysTheSame(currentMacros[i].hotkeyAsKeys(), currentlyPressedOrder.ToArray()))
+                    {
+                        if (!currentMacros[i].currentlyExecuting) currentMacros[i].macroExecuter.Execute();
+                        else currentMacros[i].macroExecuter.StopExecution();
+                    }
+                }
+            }
+
             if (currentlyPressedOrder.Count > 0)
             {
                 for (int i = 0; i < currentlyPressedOrder.Count; i++)
@@ -126,29 +63,16 @@ new List<MacroAction>()
                         else if (currentMacros.Length <= 0) return;
                         for (int a = 0; a < currentMacros.Length; a++)
                         {
-                            if (areKeyArraysTheSame(currentMacros[i].hotkeyAsKeys(), currentlyPressedOrder.ToArray()))
+                            if (areKeyArraysTheSame(currentMacros[a].hotkeyAsKeys(), currentlyPressedOrder.ToArray()))
                             {
-                                if (!currentMacros[a].currentlyExecuting) currentMacros[a].macroExecuter.Execute();
+                                if (!currentMacros[a].currentlyExecuting)currentMacros[a].macroExecuter.Execute();
                                 else currentMacros[a].macroExecuter.StopExecution();
                             }
                         }
                     }
                 }
             }
-            if (!currentlyPressedOrder.Contains(currentKey))
-            {
-                currentlyPressedOrder.Add(currentKey);
-                if (currentMacros == null) return;
-                else if (currentMacros.Length <= 0) return;
-                for (int i = 0; i < currentMacros.Length; i++)
-                {
-                    if (areKeyArraysTheSame(currentMacros[i].hotkeyAsKeys(),currentlyPressedOrder.ToArray()))
-                    {
-                        if (!currentMacros[i].currentlyExecuting) currentMacros[i].macroExecuter.Execute();
-                        else currentMacros[i].macroExecuter.StopExecution();
-                    }
-                }
-            }
+
 
             //KeyboardKeyInfo.GetKeyState(currentKey).IsPressed;
 
@@ -191,6 +115,7 @@ new List<MacroAction>()
 
         bool areKeyArraysTheSame(Keys[] first, Keys[] second)
         {
+            if (first == null) return false;
             if(first.Length != second.Length) return false;
             for (int i = 0; i < first.Length; i++)
             {

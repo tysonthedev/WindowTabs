@@ -39,6 +39,7 @@ namespace WindowTabs
         }
         public override string ToString()
         {
+            if (parameters == "") return actionType.ToString();
             return actionType.ToString() + "," + parameters;
         }
         public static MacroAction FromString(string data)
@@ -48,7 +49,12 @@ namespace WindowTabs
             if (splitData.Length <= 0) return null;
             if (Enum.TryParse<ActionType>(splitData[0], out thisActionType))
             {
-                return new MacroAction(thisActionType, data.Remove(0, splitData[0].Count()));
+                //this removes the action type from being in the parameters along with it's comma that is added in later when editing
+                //done this way to allow users to make macros within a text editor
+                if (splitData.Count() > 1)
+                    return new MacroAction(thisActionType, data.Remove(0, splitData[0].Count() + 1));
+                else
+                    return new MacroAction(thisActionType, "");
             }
             else
             {
